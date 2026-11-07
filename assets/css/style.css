@@ -1,0 +1,562 @@
+/* ==========================================================
+   TP CRUD — Gestion des étudiants
+   Fichier : assets/css/style.css
+   Organisation :
+     1. Variables (couleurs, tailles)
+     2. Base (reset, body)
+     3. Mise en page (en-tête, conteneur, carte, pied)
+     4. Formulaire (fieldset, champs, états)
+     5. Boutons
+     6. Alertes et fenêtre modale
+     7. Responsive (mobile)
+     8. Liste des étudiants et fiche détaillée
+   ========================================================== */
+
+/* ---------- 1. Variables ---------- */
+:root {
+  --couleur-principale: #1e5aa8;
+  --couleur-principale-fonce: #154581;
+  --couleur-fond: #f2f5f9;
+  --couleur-carte: #ffffff;
+  --couleur-texte: #1f2933;
+  --couleur-texte-doux: #616e7c;
+  --couleur-bordure: #cbd2d9;
+  --couleur-erreur: #c62828;
+  --couleur-erreur-fond: #fdecea;
+  --couleur-succes: #2e7d32;
+  --couleur-succes-fond: #e8f5e9;
+  --rayon: 8px;
+  --ombre: 0 4px 16px rgba(15, 35, 70, 0.08);
+  --transition: 0.2s ease;
+}
+
+/* ---------- 2. Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--couleur-texte);
+  background: var(--couleur-fond);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+code {
+  background: #eef2f7;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* ---------- 3. Mise en page ---------- */
+.conteneur {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+main.conteneur {
+  flex: 1;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.entete {
+  background: var(--couleur-principale);
+  color: #fff;
+  padding: 14px 0;
+}
+
+.entete-contenu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icone {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--couleur-principale);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.logo h1 {
+  font-size: 1.25rem;
+}
+
+.logo p {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.menu {
+  display: flex;
+  gap: 6px;
+}
+
+.menu a {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: var(--rayon);
+  transition: background var(--transition);
+}
+
+.menu a:hover,
+.menu a.actif {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.menu a.desactive {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.carte {
+  background: var(--couleur-carte);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  overflow: hidden;
+}
+
+.carte-entete {
+  padding: 20px 28px;
+  border-bottom: 1px solid #e4e7eb;
+}
+
+.carte-entete h2 {
+  font-size: 1.3rem;
+  color: var(--couleur-principale);
+}
+
+.carte-entete p {
+  color: var(--couleur-texte-doux);
+  font-size: 0.9rem;
+}
+
+form {
+  padding: 8px 28px 28px;
+}
+
+.pied {
+  text-align: center;
+  padding: 16px 0;
+  font-size: 0.85rem;
+  color: var(--couleur-texte-doux);
+}
+
+/* ---------- 4. Formulaire ---------- */
+fieldset {
+  border: none;
+  margin-top: 20px;
+}
+
+legend {
+  font-weight: 600;
+  color: var(--couleur-principale);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--couleur-principale);
+  width: 100%;
+}
+
+/* Grille à 2 colonnes : chaque .champ occupe une colonne */
+.grille {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+}
+
+/* .champ-large occupe toute la largeur (les 2 colonnes) */
+.champ-large {
+  grid-column: 1 / -1;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.champ > label,
+.champ > .label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.obligatoire {
+  color: var(--couleur-erreur);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+textarea {
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--couleur-principale);
+  box-shadow: 0 0 0 3px rgba(30, 90, 168, 0.18);
+}
+
+/* États ajoutés par JavaScript */
+.champ.invalide input,
+.champ.invalide select,
+.champ.invalide textarea {
+  border-color: var(--couleur-erreur);
+  background: var(--couleur-erreur-fond);
+}
+
+.champ.valide input,
+.champ.valide select,
+.champ.valide textarea {
+  border-color: var(--couleur-succes);
+}
+
+.aide,
+.compteur {
+  font-size: 0.78rem;
+  color: var(--couleur-texte-doux);
+}
+
+.compteur.limite {
+  color: var(--couleur-erreur);
+  font-weight: 600;
+}
+
+.message-erreur {
+  font-size: 0.8rem;
+  color: var(--couleur-erreur);
+  min-height: 1em;
+}
+
+.groupe-radio {
+  display: flex;
+  gap: 24px;
+  padding: 6px 0;
+}
+
+.radio,
+.case {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.radio input,
+.case input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--couleur-principale);
+}
+
+/* ---------- 5. Boutons ---------- */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.btn {
+  padding: 11px 22px;
+  font: inherit;
+  font-weight: 600;
+  border-radius: var(--rayon);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    transform var(--transition);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-principal {
+  background: var(--couleur-principale);
+  color: #fff;
+}
+
+.btn-principal:hover {
+  background: var(--couleur-principale-fonce);
+}
+
+.btn-secondaire {
+  background: #fff;
+  color: var(--couleur-texte);
+  border-color: var(--couleur-bordure);
+}
+
+.btn-secondaire:hover {
+  background: #f5f7fa;
+}
+
+/* ---------- 6. Alertes et modale ---------- */
+.alerte {
+  padding: 12px 16px;
+  border-radius: var(--rayon);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.alerte.succes {
+  background: var(--couleur-succes-fond);
+  color: var(--couleur-succes);
+  border-left: 4px solid var(--couleur-succes);
+}
+
+.alerte.erreur {
+  background: var(--couleur-erreur-fond);
+  color: var(--couleur-erreur);
+  border-left: 4px solid var(--couleur-erreur);
+}
+
+.modale {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 25, 40, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.modale[hidden] {
+  display: none;
+}
+
+.modale-boite {
+  background: #fff;
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  padding: 24px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modale-boite h3 {
+  color: var(--couleur-principale);
+  margin-bottom: 8px;
+}
+
+.modale-info {
+  font-size: 0.88rem;
+  color: var(--couleur-texte-doux);
+  margin-bottom: 14px;
+}
+
+.recap {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.recap th,
+.recap td {
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid #e4e7eb;
+  vertical-align: top;
+}
+
+.recap th {
+  width: 40%;
+  font-family: Consolas, monospace;
+  font-weight: 600;
+  color: var(--couleur-principale);
+}
+
+/* ---------- 7. Responsive ---------- */
+@media (max-width: 680px) {
+  .grille {
+    grid-template-columns: 1fr;
+  }
+
+  form,
+  .carte-entete {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+/* ==========================================================
+   8. Liste des étudiants, fiche détaillée, alertes
+   ========================================================== */
+
+/* Un lien qui a l'apparence d'un bouton */
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* Liste des erreurs dans une alerte */
+.alerte ul {
+  margin: 8px 0 0 20px;
+}
+
+/* En-tête de la liste : titre à gauche, bouton à droite */
+.entete-liste {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Barre de recherche */
+.recherche {
+  display: flex;
+  gap: 8px;
+  padding: 16px 28px;
+  flex-wrap: wrap;
+}
+
+.recherche input {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Tableau des étudiants */
+.tableau-conteneur {
+  overflow-x: auto;
+  padding: 0 28px 24px;
+}
+
+.tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.tableau th {
+  background: var(--couleur-principale);
+  color: #fff;
+  text-align: left;
+  padding: 10px 12px;
+  white-space: nowrap;
+}
+
+.tableau td {
+  padding: 10px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #e4e7eb;
+}
+
+.tableau tbody tr:hover {
+  background: #f5f8fc;
+}
+
+/* Les trois actions d'une ligne */
+.actions-ligne {
+  white-space: nowrap;
+}
+
+/* Liens et formulaire côte à côte (sans changer le display du <td>) */
+.actions-ligne a,
+.actions-ligne form {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 0;
+}
+
+.lien {
+  color: var(--couleur-principale);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.lien:hover {
+  text-decoration: underline;
+}
+
+.lien-danger {
+  color: var(--couleur-erreur);
+}
+
+.vide {
+  padding: 24px 28px;
+  color: var(--couleur-texte-doux);
+}
+
+/* Fiche détaillée (voir.php) */
+.fiche {
+  width: calc(100% - 56px);
+  margin: 16px 28px 0;
+  border-collapse: collapse;
+}
+
+.fiche th,
+.fiche td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e4e7eb;
+}
+
+.fiche th {
+  width: 35%;
+  color: var(--couleur-texte-doux);
+  font-weight: 600;
+}
+
+.fiche-actions {
+  padding: 0 28px 24px;
+}
