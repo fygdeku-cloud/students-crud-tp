@@ -32,7 +32,7 @@
             $result_v = $sql_v -> fetchAll(PDO::FETCH_ASSOC);
 
             if (count($result_v) > 0) {
-                $_SESSION['erreur_v'] = 'Le matricule, email ou le telephone est deja utilise';
+                $_SESSION['message'] = 'Le matricule, email ou le telephone est deja utilise';
                 $_SESSION['type'] = "erreur";
             }else{
                 $sql_insert = $conn -> prepare("INSERT INTO etudiant(matricule, nom, prenom, adresse, date_naissance, sexe, email, telephone, filiere, niveau, certification)

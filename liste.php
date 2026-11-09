@@ -1,4 +1,10 @@
-
+<?php 
+    require "connexion.php";
+    session_start();
+    $sql_select = $conn -> prepare("SELECT Et.*, F.nom as F_nom, Nv.nom as Nv_nom FROM etudiant Et INNER JOIN niveau Nv ON Et.niveau=Nv.id INNER JOIN filiere F ON Et.filiere=F.id");
+    $sql_select -> execute();
+    $etudiant = $sql_select -> fetchAll(PDO::FETCH_ASSOC);
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -37,9 +43,12 @@
             En PHP, il ne sera affiché qu'après un ajout, une modification ou une suppression.
             Ici, il est visible pour que vous voyiez son apparence.
         -->
-            <div class="alerte">
+             <?php if (isset($_SESSION['message'])) { ?>
+            <div id="alerte" class="alerte <?php  echo $_SESSION['type']; ?> "role="status">
+                <span><?php echo $_SESSION['message']; ?></span>
+                <?php unset($_SESSION['message'], $_SESSION['type']) ?>
             </div>
-
+            <?php } ?>
         <section class="carte">
 
             <div class="carte-entete entete-liste">
@@ -59,14 +68,13 @@
                 <input type="text" name="q" placeholder="Rechercher par matricule, nom ou prénom ..." value="">
                 <button type="submit" class="btn btn-principal">Rechercher</button>
             </form>
-
-            <!--
-                Si aucun étudiant n'est trouvé, PHP affichera ceci à la place du tableau :
-                <p class="vide">Aucun étudiant trouvé.</p>
-            -->
-                <div class="tableau-conteneur">
+                <?php if(count($etudiant) > 0){?>
+                 <div class="tableau-conteneur">
                     <table class="tableau">
                         <thead>
+                            <tr class="tableau"><?php 
+                            $nbe=count($etudiant);
+                            echo $nbe." etudiants" ?></tr>
                             <tr>
                                 <th>#</th>
                                 <th>Matricule</th>
@@ -78,11 +86,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                           
-
+                            <?php foreach ($etudiant as $key=>$etudiant) { ?>
+                                <tr>
+                                    <td><?php echo ++$key ?></td>
+                                    <td><?php echo $etudiant["matricule"] ?></td>
+                                    <td><?php echo $etudiant["nom"]." ".$etudiant["prenom"] ?></td>
+                                    <td><?php echo $etudiant["F_nom"] ?></td>
+                                    <td><?php echo $etudiant["Nv_nom"] ?></td>
+                                    <td><?php echo $etudiant["telephone"] ?></td>
+                                    <td>
+                                        <a href="update.php?id=<?php echo (int)$etudiant["id"] ?>" class="lien">Modifier</a>
+                                        <form action="supprimer.php?id=<?php echo (int)$etudiant["id"] ?> " method="post" onsubmit="Confirm('Confirmer la suppression');">
+                                            <button type="submit" class="lien lien-danger">Supprimer</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
+               <?php }else{ ?>
+                   <p class="vide">Aucun etudiant</p>
+               <?php } ?>
+                
         </section>
     </main>
 
